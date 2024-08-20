@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compact Habit Tracker Widget</title>
+    <style>
+        /* Widget container styling */
+        .widget {
+            width: 250px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        /* Completed habits display */
+        .completed-habits {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Style for each completed habit */
+        .habit-entry {
+            background-color: #f0f4f8;
+            padding: 4px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+        }
+
+        /* Habit buttons styling */
+        .habit-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* Individual habit button styling */
+        .habit-item {
+            cursor: pointer;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #e3f2fd;
+            transition: background-color 0.3s;
+            text-align: center;
+            font-size: 8px;
+            color: #1565c0;
+            flex: 1 1 40px;
+        }
+
+        /* Hover effect for habit items */
+        .habit-item:hover {
+            background-color: #bbdefb;
+        }
+
+        /* Add habit button styling */
+        .add-habit {
+            cursor: pointer;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            background-color: #1565c0;
+            color: #fff;
+            transition: background-color 0.3s;
+            text-align: center;
+            font-size: 14px;
+            line-height: 14px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
+
+        /* Hover effect for add habit button */
+        .add-habit:hover {
+            background-color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="widget">
+    <div class="completed-habits" id="completedHabits">
+        <!-- Completed habits will appear here -->
+    </div>
+    <div class="habit-list" id="habitList">
+        <!-- Habit buttons will be dynamically added here -->
+    </div>
+    <div class="add-habit" id="addHabit">+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const habitList = document.getElementById('habitList');
+        const completedHabits = document.getElementById('completedHabits');
+
+        // 18 sample habits
+        let habits = [
+            'Morning Routine', 'Eat Food', 'Room Clean', 'Exercise', 
+            'Read Book', 'Walk Dog', 'Meditate', 'Plan Day', 
+            'Drink Water', 'Check Emails', 'Work on Project', 
+            'Call Family', 'Grocery Shopping', 'Laundry', 
+            'Cook Dinner', 'Watch Show', 'Journal', 'Sleep'
+        ];
+
+        // Function to render habits
+        function renderHabits() {
+            habitList.innerHTML = '';
+            habits.forEach(habit => {
+                const habitButton = document.createElement('div');
+                habitButton.textContent = habit;
+                habitButton.classList.add('habit-item');
+                habitButton.addEventListener('click', () => handleHabitClick(habit));
+                habitList.appendChild(habitButton);
+            });
+        }
+
+        // Handle habit click event
+        function handleHabitClick(habit) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const habitEntry = document.createElement('div');
+            habitEntry.classList.add('habit-entry');
+            habitEntry.innerHTML = `<span>${habit}</span><span>${timeString}</span>`;
+            completedHabits.appendChild(habitEntry);
+
+            // Remove clicked habit from the list
+            habits = habits.filter(h => h !== habit);
+            renderHabits();
+        }
+
+        // Add new habit
+        document.getElementById('addHabit').addEventListener('click', () => {
+            const newHabit = prompt('Enter the new habit:');
+            if (newHabit) {
+                habits.push(newHabit);
+                renderHabits();
+            }
+        });
+
+        // Initial rendering of habits
+        renderHabits();
+    });
+</script>
+
+</body>
+</html>

@@ -7,10 +7,12 @@
     <style>
         /* Widget container styling */
         .widget {
-            width: 250px;
+            width: 350px; /* Increased width */
             padding: 10px;
-            border: none; /* Remove the border */
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Light border */
+            border-radius: 12px;
             background-color: rgba(255, 255, 255, 0); /* Fully transparent background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px auto;
             position: relative;
@@ -27,11 +29,11 @@
         /* Style for each completed habit */
         .habit-entry {
             cursor: default;
-            background-color: rgba(240, 244, 248, 0.9); /* Slightly opaque background for visibility */
+            background-color: rgba(47, 53, 66, 0.8); /* Neutral dark gray */
             padding: 4px 6px; /* Reduced padding */
             border-radius: 6px;
             font-size: 14px; /* Keep the font size same */
-            color: #333;
+            color: #f1f1f1; /* Light text for contrast */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,17 +56,17 @@
             padding: 4px 6px; /* Reduced padding */
             border: 1px solid rgba(0, 0, 0, 0.1); /* Semi-transparent border */
             border-radius: 4px;
-            background-color: rgba(227, 242, 253, 0.9); /* Slightly opaque background for visibility */
+            background-color: rgba(64, 75, 91, 0.8); /* Soft neutral gray */
             transition: background-color 0.3s;
             text-align: center;
             font-size: 12px; /* Keep the font size same */
-            color: #1565c0;
+            color: #f1f1f1; /* Light text color */
             flex: 1 1 50px; /* Adjust size */
         }
 
         /* Hover effect for habit items */
         .habit-item:hover {
-            background-color: rgba(187, 222, 251, 0.9); /* Slightly opaque hover effect */
+            background-color: rgba(99, 110, 126, 0.8); /* Slightly lighter gray */
         }
 
         /* Left clickable area */
@@ -81,7 +83,7 @@
 
         /* Highlight the clickable area when clicked */
         .habit-entry.clicked .clickable {
-            background-color: rgba(66, 165, 245, 0.8); /* Semi-transparent highlight */
+            background-color: rgba(88, 101, 121, 0.8); /* Neutral highlight */
         }
 
         /* Animation for habit completion */
@@ -125,13 +127,14 @@
         const habitList = document.getElementById('habitList');
         const completedHabits = document.getElementById('completedHabits');
 
-        // 18 sample habits
+        // Updated list of habits
         let habits = [
-            'Morning Routine', 'Eat Food', 'Room Clean', 'Exercise', 
-            'Read Book', 'Walk Dog', 'Meditate', 'Plan Day', 
-            'Drink Water', 'Check Emails', 'Work on Project', 
-            'Call Family', 'Grocery Shopping', 'Laundry', 
-            'Cook Dinner', 'Watch Show', 'Journal', 'Sleep'
+            '🌄 Morning routine', '🛋️ Room Clean', '🍱 Eat food', '🚶 Walk and listen', 
+            '🌙 Night Routine', '🚿 Take Bath', '🤸‍♂️ Record + workout', '🎸 Record + Guitar',
+            '➕Task a', '➕Task 2a', '🤺 Record + Nanchaku', '📚 Record + Read',
+            '↗️ Record + Clarity to do impactful things', '🗣️ Record + Speech',
+            '📝 Record + Journal', '💭 Listen, write and think', '⚛️ Expanding the skillset',
+            '🌌 Observe, think and write'
         ];
 
         // Load completed habits from localStorage

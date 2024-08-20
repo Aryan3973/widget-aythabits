@@ -9,10 +9,8 @@
         .widget {
             width: 250px;
             padding: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none; /* Remove the border */
+            background-color: rgba(255, 255, 255, 0); /* Fully transparent background */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px auto;
             position: relative;
@@ -29,7 +27,7 @@
         /* Style for each completed habit */
         .habit-entry {
             cursor: default;
-            background-color: rgba(240, 244, 248, 0.8); /* Semi-transparent background */
+            background-color: rgba(240, 244, 248, 0.9); /* Slightly opaque background for visibility */
             padding: 4px 6px; /* Reduced padding */
             border-radius: 6px;
             font-size: 14px; /* Keep the font size same */
@@ -56,7 +54,7 @@
             padding: 4px 6px; /* Reduced padding */
             border: 1px solid rgba(0, 0, 0, 0.1); /* Semi-transparent border */
             border-radius: 4px;
-            background-color: rgba(227, 242, 253, 0.8); /* Semi-transparent background */
+            background-color: rgba(227, 242, 253, 0.9); /* Slightly opaque background for visibility */
             transition: background-color 0.3s;
             text-align: center;
             font-size: 12px; /* Keep the font size same */
@@ -66,7 +64,7 @@
 
         /* Hover effect for habit items */
         .habit-item:hover {
-            background-color: rgba(187, 222, 251, 0.8); /* Semi-transparent hover effect */
+            background-color: rgba(187, 222, 251, 0.9); /* Slightly opaque hover effect */
         }
 
         /* Left clickable area */
@@ -203,4 +201,3 @@
 
 </body>
 </html>
-

@@ -9,9 +9,9 @@
         .widget {
             width: 250px;
             padding: 10px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 12px;
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px auto;
@@ -23,68 +23,91 @@
             margin-bottom: 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px; /* Slight gap */
         }
 
         /* Style for each completed habit */
         .habit-entry {
-            background-color: #f0f4f8;
-            padding: 4px 6px;
-            border-radius: 8px;
-            font-size: 10px;
+            cursor: default;
+            background-color: rgba(240, 244, 248, 0.8); /* Semi-transparent background */
+            padding: 4px 6px; /* Reduced padding */
+            border-radius: 6px;
+            font-size: 14px; /* Keep the font size same */
             color: #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Semi-transparent border */
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: slideIn 0.4s ease forwards;
         }
 
         /* Habit buttons styling */
         .habit-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 4px; /* Reduced gap */
         }
 
         /* Individual habit button styling */
         .habit-item {
             cursor: pointer;
-            padding: 4px 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #e3f2fd;
+            padding: 4px 6px; /* Reduced padding */
+            border: 1px solid rgba(0, 0, 0, 0.1); /* Semi-transparent border */
+            border-radius: 4px;
+            background-color: rgba(227, 242, 253, 0.8); /* Semi-transparent background */
             transition: background-color 0.3s;
             text-align: center;
-            font-size: 8px;
+            font-size: 12px; /* Keep the font size same */
             color: #1565c0;
-            flex: 1 1 40px;
+            flex: 1 1 50px; /* Adjust size */
         }
 
         /* Hover effect for habit items */
         .habit-item:hover {
-            background-color: #bbdefb;
+            background-color: rgba(187, 222, 251, 0.8); /* Semi-transparent hover effect */
         }
 
-        /* Add habit button styling */
-        .add-habit {
-            cursor: pointer;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 50%;
-            background-color: #1565c0;
-            color: #fff;
-            transition: background-color 0.3s;
-            text-align: center;
-            font-size: 14px;
-            line-height: 14px;
+        /* Left clickable area */
+        .habit-entry .clickable {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 15px;
+            background-color: transparent;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        /* Hover effect for add habit button */
-        .add-habit:hover {
-            background-color: #0d47a1;
+        /* Highlight the clickable area when clicked */
+        .habit-entry.clicked .clickable {
+            background-color: rgba(66, 165, 245, 0.8); /* Semi-transparent highlight */
+        }
+
+        /* Animation for habit completion */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation for habit removal */
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
         }
     </style>
 </head>
@@ -97,7 +120,6 @@
     <div class="habit-list" id="habitList">
         <!-- Habit buttons will be dynamically added here -->
     </div>
-    <div class="add-habit" id="addHabit">+</div>
 </div>
 
 <script>
@@ -114,6 +136,13 @@
             'Cook Dinner', 'Watch Show', 'Journal', 'Sleep'
         ];
 
+        // Load completed habits from localStorage
+        const savedCompletedHabits = JSON.parse(localStorage.getItem('completedHabits')) || [];
+        savedCompletedHabits.forEach(habit => {
+            addHabitToCompleted(habit.name, habit.time, false);
+            habits = habits.filter(h => h !== habit.name); // Remove completed habit from the available list
+        });
+
         // Function to render habits
         function renderHabits() {
             habitList.innerHTML = '';
@@ -129,25 +158,43 @@
         // Handle habit click event
         function handleHabitClick(habit) {
             const now = new Date();
-            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            addHabitToCompleted(habit, timeString, true);
+            habits = habits.filter(h => h !== habit); // Remove clicked habit from the list
+            renderHabits();
+        }
+
+        // Function to add a habit to the completed list
+        function addHabitToCompleted(habit, timeString, saveToLocalStorage) {
             const habitEntry = document.createElement('div');
             habitEntry.classList.add('habit-entry');
             habitEntry.innerHTML = `<span>${habit}</span><span>${timeString}</span>`;
             completedHabits.appendChild(habitEntry);
 
-            // Remove clicked habit from the list
-            habits = habits.filter(h => h !== habit);
-            renderHabits();
+            // Add event listener to move habit back to lower section
+            habitEntry.querySelector('span:first-child').addEventListener('click', () => moveHabitBack(habitEntry, habit));
+
+            // Save to localStorage if necessary
+            if (saveToLocalStorage) {
+                const completedData = JSON.parse(localStorage.getItem('completedHabits')) || [];
+                completedData.push({ name: habit, time: timeString });
+                localStorage.setItem('completedHabits', JSON.stringify(completedData));
+            }
         }
 
-        // Add new habit
-        document.getElementById('addHabit').addEventListener('click', () => {
-            const newHabit = prompt('Enter the new habit:');
-            if (newHabit) {
-                habits.push(newHabit);
+        // Move habit back to lower section with animation
+        function moveHabitBack(habitEntry, habit) {
+            habitEntry.style.animation = 'slideOut 0.4s ease forwards';
+            habitEntry.addEventListener('animationend', () => {
+                completedHabits.removeChild(habitEntry);
+                habits.push(habit);
                 renderHabits();
-            }
-        });
+                // Remove from localStorage
+                let completedData = JSON.parse(localStorage.getItem('completedHabits')) || [];
+                completedData = completedData.filter(h => h.name !== habit);
+                localStorage.setItem('completedHabits', JSON.stringify(completedData));
+            });
+        }
 
         // Initial rendering of habits
         renderHabits();
@@ -156,3 +203,4 @@
 
 </body>
 </html>
+
